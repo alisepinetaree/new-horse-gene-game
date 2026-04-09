@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Genebound</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1>Genebound</h1>
+      <p class="subtitle">A simple horse genetics breeding game starter</p>
+    </div>
+  </header>
+
+  <main class="container layout">
+    <section class="panel">
+      <h2>Breeding Barn</h2>
+
+      <div class="horse-grid">
+        <div class="horse-card">
+          <h3>Mare</h3>
+          <label>
+            Name
+            <input id="mare-name" type="text" value="Juniper" />
+          </label>
+          <label>
+            Extension
+            <select id="mare-extension">
+              <option value="EE">EE</option>
+              <option value="Ee" selected>Ee</option>
+              <option value="ee">ee</option>
+            </select>
+          </label>
+          <label>
+            Agouti
+            <select id="mare-agouti">
+              <option value="AA">AA</option>
+              <option value="Aa" selected>Aa</option>
+              <option value="aa">aa</option>
+            </select>
+          </label>
+          <label>
+            Cream
+            <select id="mare-cream">
+              <option value="NN">NN</option>
+              <option value="CrN" selected>CrN</option>
+              <option value="CrCr">CrCr</option>
+            </select>
+          </label>
+          <label>
+            Dun
+            <select id="mare-dun">
+              <option value="DD">DD</option>
+              <option value="Dd">Dd</option>
+              <option value="dd" selected>dd</option>
+            </select>
+          </label>
+          <label>
+            Gray
+            <select id="mare-gray">
+              <option value="GG">GG</option>
+              <option value="Gg">Gg</option>
+              <option value="gg" selected>gg</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="horse-card">
+          <h3>Stallion</h3>
+          <label>
+            Name
+            <input id="stallion-name" type="text" value="Rook" />
+          </label>
+          <label>
+            Extension
+            <select id="stallion-extension">
+              <option value="EE">EE</option>
+              <option value="Ee">Ee</option>
+              <option value="ee" selected>ee</option>
+            </select>
+          </label>
+          <label>
+            Agouti
+            <select id="stallion-agouti">
+              <option value="AA">AA</option>
+              <option value="Aa" selected>Aa</option>
+              <option value="aa">aa</option>
+            </select>
+          </label>
+          <label>
+            Cream
+            <select id="stallion-cream">
+              <option value="NN" selected>NN</option>
+              <option value="CrN">CrN</option>
+              <option value="CrCr">CrCr</option>
+            </select>
+          </label>
+          <label>
+            Dun
+            <select id="stallion-dun">
+              <option value="DD">DD</option>
+              <option value="Dd" selected>Dd</option>
+              <option value="dd">dd</option>
+            </select>
+          </label>
+          <label>
+            Gray
+            <select id="stallion-gray">
+              <option value="GG">GG</option>
+              <option value="Gg">Gg</option>
+              <option value="gg" selected>gg</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button id="breed-button">Breed Horses</button>
+        <button id="save-button" class="secondary">Save Foal To Herd</button>
+        <button id="clear-button" class="secondary">Clear Herd</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Foal Result</h2>
+      <div id="result" class="result-card">
+        <p>Pick two horses and click <strong>Breed Horses</strong>.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Your Herd</h2>
+      <div id="herd" class="herd-list">
+        <p class="muted">No saved horses yet.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>How It Works</h2>
+      <ul>
+        <li>Breeding randomly selects one allele from each parent for every gene.</li>
+        <li>The starter calculates a simple phenotype from extension, agouti, cream, dun, and gray.</li>
+        <li>Saved foals stay in your browser using localStorage.</li>
+        <li>You can expand this with more genes, art, markets, exploration, and registries.</li>
+      </ul>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
