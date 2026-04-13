@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Genebound Fixed</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1>Genebound</h1>
+      <p class="subtitle">Fixed expanded horse genetics browser game starter</p>
+    </div>
+  </header>
+
+  <main class="container layout">
+    <section class="panel">
+      <h2>Breeding Barn</h2>
+      <div class="horse-grid">
+        <div class="horse-card">
+          <h3>Mare</h3>
+          <label>Name<input id="mare-name" type="text" value="Juniper" /></label>
+          <div id="mare-genes" class="gene-fields"></div>
+        </div>
+        <div class="horse-card">
+          <h3>Stallion</h3>
+          <label>Name<input id="stallion-name" type="text" value="Rook" /></label>
+          <div id="stallion-genes" class="gene-fields"></div>
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button id="breed-button" type="button">Breed Horses</button>
+        <button id="save-button" class="secondary" type="button">Save Foal To Herd</button>
+        <button id="clear-button" class="secondary" type="button">Clear Herd</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Foal Result</h2>
+      <div id="result" class="result-card">
+        <p>Pick two horses and click <strong>Breed Horses</strong>.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Your Herd</h2>
+      <div id="herd" class="herd-list">
+        <p class="muted">No saved horses yet.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
