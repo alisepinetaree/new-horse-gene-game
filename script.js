@@ -77,12 +77,14 @@ function calculatePhenotype(genes) {
   const cream = genes.cream;
   const dun = genes.dun;
   const gray = genes.gray;
+  const roan = genes.roan;
 
   const isGray = hasAllele(gray, "G");
   const isChestnut = countAllele(ext, "e") === 2;
   const hasAgouti = hasAllele(agouti, "A");
   const creamCount = countAllele(cream, "Cr");
   const isDun = hasAllele(dun, "D");
+  const isRoan = hasAllele(roan, "R");
 
   let base;
   if (isChestnut) {
@@ -111,7 +113,9 @@ function calculatePhenotype(genes) {
     else if (color === "Black") color = "Grullo";
     else color = `${color} Dun`;
   }
-
+  if (isRoan) {
+    color = `${color} Roan`;
+}
   if (isGray) {
     color = `Gray (${color} base)`;
   }
