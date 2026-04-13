@@ -5,7 +5,8 @@ const geneDefs = [
   { id: "dun", label: "Dun", locus: ["D", "d"] },
   { id: "gray", label: "Gray", locus: ["G", "g"] },
   { id: "roan", label: "Roan", locus: ["R", "n"] },
-  { id: "leopard complex", label: "leopard complex", locus: ["Lp", "n"] }
+  { id: "leopard complex", label: "leopard complex", locus: ["Lp", "n"] },
+  { id: "tobino", label: "tobino", locus: ["To", "n"] }
 ];
 
 const resultEl = document.getElementById("result");
