@@ -28,12 +28,15 @@ function parseGenotype(value, geneId) {
 
 function canonicalGene(geneId, alleles) {
   const orderMap = {
-    extension: ["E", "e"],
-    agouti: ["A", "a"],
-    cream: ["Cr", "N"],
-    dun: ["D", "d"],
-    gray: ["G", "g"]
-  };
+  extension: ["E", "e"],
+  agouti: ["A", "a"],
+  cream: ["Cr", "N"],
+  dun: ["D", "d"],
+  gray: ["G", "g"],
+  roan: ["R", "n"],
+  leopard complex: ["LP", "lp"],
+  tobino: ["To", "to"]
+};
   const order = orderMap[geneId];
   return [...alleles].sort((a, b) => order.indexOf(a) - order.indexOf(b));
 }
