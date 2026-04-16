@@ -1,234 +1,49 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const geneDefs = [
-    {id:"extension",label:"Extension",defaults:{mare:"Ee",stallion:"ee"},options:[["EE",["E","E"]],["Ee",["E","e"]],["ee",["e","e"]]],sort:["E","e"]},
-    {id:"agouti",label:"Agouti",defaults:{mare:"Aa",stallion:"Aa"},options:[["AA",["A","A"]],["Aa",["A","a"]],["aa",["a","a"]]],sort:["A","a"]},
-    {id:"cream",label:"Cream",defaults:{mare:"CrN",stallion:"NN"},options:[["NN",["N","N"]],["CrN",["Cr","N"]],["CrCr",["Cr","Cr"]]],sort:["Cr","N"]},
-    {id:"dun",label:"Dun",defaults:{mare:"dd",stallion:"Dd"},options:[["DD",["D","D"]],["Dd",["D","d"]],["dd",["d","d"]]],sort:["D","d"]},
-    {id:"gray",label:"Gray",defaults:{mare:"gg",stallion:"gg"},options:[["GG",["G","G"]],["Gg",["G","g"]],["gg",["g","g"]]],sort:["G","g"]},
-    {id:"roan",label:"Roan",defaults:{mare:"nn",stallion:"nn"},options:[["RR",["R","R"]],["Rn",["R","n"]],["nn",["n","n"]]],sort:["R","n"]},
-    {id:"champagne",label:"Champagne",defaults:{mare:"NN",stallion:"NN"},options:[["ChCh",["Ch","Ch"]],["ChN",["Ch","N"]],["NN",["N","N"]]],sort:["Ch","N"]},
-    {id:"silver",label:"Silver",defaults:{mare:"NN",stallion:"NN"},options:[["ZZ",["Z","Z"]],["ZN",["Z","N"]],["NN",["N","N"]]],sort:["Z","N"]},
-    {id:"pearl",label:"Pearl",defaults:{mare:"NN",stallion:"NN"},options:[["PrlPrl",["Prl","Prl"]],["PrlN",["Prl","N"]],["NN",["N","N"]]],sort:["Prl","N"]},
-    {id:"flaxen",label:"Flaxen",defaults:{mare:"FF",stallion:"FF"},options:[["FF",["F","F"]],["Ff",["F","f"]],["ff",["f","f"]]],sort:["F","f"]},
-    {id:"mushroom",label:"Mushroom",defaults:{mare:"NN",stallion:"NN"},options:[["MuMu",["Mu","Mu"]],["MuN",["Mu","N"]],["NN",["N","N"]]],sort:["Mu","N"]},
-    {id:"tobiano",label:"Tobiano",defaults:{mare:"NN",stallion:"NN"},options:[["ToTo",["To","To"]],["ToN",["To","N"]],["NN",["N","N"]]],sort:["To","N"]},
-    {id:"frame",label:"Frame Overo",defaults:{mare:"NN",stallion:"NN"},options:[["OO",["O","O"]],["ON",["O","N"]],["NN",["N","N"]]],sort:["O","N"]},
-    {id:"splash",label:"Splash",defaults:{mare:"NN",stallion:"NN"},options:[["SWSW",["SW","SW"]],["SWN",["SW","N"]],["NN",["N","N"]]],sort:["SW","N"]},
-    {id:"sabino",label:"Sabino-1",defaults:{mare:"NN",stallion:"NN"},options:[["SB1SB1",["SB1","SB1"]],["SB1N",["SB1","N"]],["NN",["N","N"]]],sort:["SB1","N"]},
-    {id:"lp",label:"Leopard Complex",defaults:{mare:"NN",stallion:"NN"},options:[["LpLp",["Lp","Lp"]],["LpN",["Lp","N"]],["NN",["N","N"]]],sort:["Lp","N"]},
-    {id:"patn1",label:"PATN1",defaults:{mare:"NN",stallion:"NN"},options:[["PATN1PATN1",["PATN1","PATN1"]],["PATN1N",["PATN1","N"]],["NN",["N","N"]]],sort:["PATN1","N"]},
-    {id:"w20",label:"W20",defaults:{mare:"NN",stallion:"NN"},options:[["W20W20",["W20","W20"]],["W20N",["W20","N"]],["NN",["N","N"]]],sort:["W20","N"]},
-    {id:"w5",label:"W5",defaults:{mare:"NN",stallion:"NN"},options:[["W5W5",["W5","W5"]],["W5N",["W5","N"]],["NN",["N","N"]]],sort:["W5","N"]},
-    {id:"w10",label:"W10",defaults:{mare:"NN",stallion:"NN"},options:[["W10W10",["W10","W10"]],["W10N",["W10","N"]],["NN",["N","N"]]],sort:["W10","N"]},
-    {id:"w22",label:"W22",defaults:{mare:"NN",stallion:"NN"},options:[["W22W22",["W22","W22"]],["W22N",["W22","N"]],["NN",["N","N"]]],sort:["W22","N"]}
-  ];
-
-  const byId = (id) => document.getElementById(id);
-  const resultEl = byId("result");
-  const herdEl = byId("herd");
-
-  function renderGeneFields(prefix) {
-    const container = byId(`${prefix}-genes`);
-    container.innerHTML = "";
-    geneDefs.forEach((gene) => {
-      const label = document.createElement("label");
-      label.textContent = gene.label;
-      const select = document.createElement("select");
-      select.id = `${prefix}-${gene.id}`;
-      gene.options.forEach(([value]) => {
-        const opt = document.createElement("option");
-        opt.value = value;
-        opt.textContent = value;
-        if (value === gene.defaults[prefix]) opt.selected = true;
-        select.appendChild(opt);
-      });
-      label.appendChild(select);
-      container.appendChild(label);
-    });
-  }
-
-  function geneDef(id) {
-    return geneDefs.find((g) => g.id === id);
-  }
-
-  function optionAlleles(geneId, value) {
-    return geneDef(geneId).options.find(([v]) => v === value)[1].slice();
-  }
-
-  function canonical(geneId, alleles) {
-    const order = geneDef(geneId).sort;
-    return alleles.slice().sort((a, b) => order.indexOf(a) - order.indexOf(b));
-  }
-
-  function genotypeString(geneId, alleles) {
-    const sorted = canonical(geneId, alleles);
-    const match = geneDef(geneId).options.find(([, a]) => JSON.stringify(a) === JSON.stringify(sorted));
-    return match ? match[0] : sorted.join("");
-  }
-
-  function readHorse(prefix) {
-    const horse = {
-      name: byId(`${prefix}-name`).value.trim() || (prefix === "mare" ? "Unnamed Mare" : "Unnamed Stallion")
-    };
-    geneDefs.forEach((gene) => {
-      horse[gene.id] = optionAlleles(gene.id, byId(`${prefix}-${gene.id}`).value);
-    });
-    return horse;
-  }
-
-  function randAllele(pair) {
-    return pair[Math.floor(Math.random() * pair.length)];
-  }
-
-  function has(alleles, allele) {
-    return alleles.includes(allele);
-  }
-
-  function count(alleles, allele) {
-    return alleles.filter((x) => x === allele).length;
-  }
-
-  function baseColor(genes) {
-    const chestnut = count(genes.extension, "e") === 2;
-    const agouti = has(genes.agouti, "A");
-    if (chestnut) return "Chestnut";
-    if (agouti) return "Bay";
-    return "Black";
-  }
-
-  function phenotype(genes) {
-    const base = baseColor(genes);
-    const creamCount = count(genes.cream, "Cr");
-    const pearlCount = count(genes.pearl, "Prl");
-    const visiblePearl = pearlCount === 2 || (pearlCount === 1 && creamCount === 1);
-    const isFlaxen = count(genes.flaxen, "f") === 2;
-    const hasMushroom = has(genes.mushroom, "Mu");
-
-    let color = base;
-
-    if (base === "Chestnut" && hasMushroom) color = "Mushroom";
-    else if (base === "Chestnut" && isFlaxen) color = "Flaxen Chestnut";
-
-    if (has(genes.champagne, "Ch")) {
-      if (creamCount === 1) color = base === "Chestnut" ? "Gold Cream Champagne" : base === "Bay" ? "Amber Cream Champagne" : "Classic Cream Champagne";
-      else if (creamCount === 2) color = base === "Chestnut" ? "Gold Double Cream Champagne" : base === "Bay" ? "Amber Double Cream Champagne" : "Classic Double Cream Champagne";
-      else color = base === "Chestnut" ? "Gold Champagne" : base === "Bay" ? "Amber Champagne" : "Classic Champagne";
-    } else if (visiblePearl && creamCount === 1) {
-      color = base === "Chestnut" ? "Palomino Pearl" : base === "Bay" ? "Buckskin Pearl" : "Smoky Black Pearl";
-    } else if (pearlCount === 2) {
-      color = base === "Chestnut" ? "Chestnut Pearl" : base === "Bay" ? "Bay Pearl" : "Black Pearl";
-    } else if (creamCount === 1) {
-      color = base === "Chestnut" ? "Palomino" : base === "Bay" ? "Buckskin" : "Smoky Black";
-    } else if (creamCount === 2) {
-      color = base === "Chestnut" ? "Cremello" : base === "Bay" ? "Perlino" : "Smoky Cream";
-    }
-
-    if (has(genes.silver, "Z") && base !== "Chestnut") {
-      if (color === "Black") color = "Silver Black";
-      else if (color === "Bay") color = "Silver Bay";
-      else if (color === "Buckskin") color = "Silver Buckskin";
-      else if (color === "Smoky Black") color = "Silver Smoky Black";
-      else color = `Silver ${color}`;
-    }
-
-    if (has(genes.dun, "D")) {
-      if (color === "Black") color = "Grullo";
-      else if (color === "Bay") color = "Bay Dun";
-      else color = `Red Dun ${color}`.replace("Red Dun Palomino", "Dunalino");
-    }
-
-    if (has(genes.roan, "R")) color += " Roan";
-    if (has(genes.gray, "G")) color = `Gray (${color} base)`;
-
-    const patterns = [];
-    if (has(genes.tobiano, "To")) patterns.push("Tobiano");
-    const frameCount = count(genes.frame, "O");
-    if (frameCount === 2) patterns.push("Frame Overo (LWO risk)");
-    else if (frameCount === 1) patterns.push("Frame Overo");
-    if (has(genes.splash, "SW")) patterns.push("Splash");
-    if (has(genes.sabino, "SB1")) patterns.push("Sabino");
-
-    const lpCount = count(genes.lp, "Lp");
-    const hasPATN1 = has(genes.patn1, "PATN1");
-    if (lpCount === 2 && hasPATN1) patterns.push("Fewspot Leopard Appaloosa");
-    else if (lpCount === 1 && hasPATN1) patterns.push("Leopard Appaloosa");
-    else if (lpCount === 2) patterns.push("Snowcap Appaloosa");
-    else if (lpCount === 1) patterns.push("Varnish Roan Appaloosa");
-
-    if (has(genes.w20, "W20")) patterns.push("W20 White");
-    if (has(genes.w5, "W5")) patterns.push("W5 White");
-    if (has(genes.w10, "W10")) patterns.push("W10 White");
-    if (has(genes.w22, "W22")) patterns.push("W22 White");
-
-    if (patterns.length) color += ` with ${patterns.join(", ")}`;
-    return color;
-  }
-
-  function breed(mare, stallion) {
-    const genes = {};
-    geneDefs.forEach((gene) => {
-      genes[gene.id] = canonical(gene.id, [randAllele(mare[gene.id]), randAllele(stallion[gene.id])]);
-    });
-    return {
-      id: `${Date.now()}-${Math.floor(Math.random() * 100000)}`,
-      name: `Foal ${Math.floor(Math.random() * 9000) + 1000}`,
-      genes,
-      phenotype: phenotype(genes)
-    };
-  }
-
-  function genotypeSummary(genes) {
-    return geneDefs.map((gene) => `${gene.label}: ${genotypeString(gene.id, genes[gene.id])}`).join(" • ");
-  }
-
-  function getHerd() {
-    try { return JSON.parse(localStorage.getItem("genebound-herd-fixed")) || []; }
-    catch { return []; }
-  }
-
-  function setHerd(herd) {
-    localStorage.setItem("genebound-herd-fixed", JSON.stringify(herd));
-  }
-
-  function renderHerd() {
-    const herd = getHerd();
-    if (!herd.length) {
-      herdEl.innerHTML = '<p class="muted">No saved horses yet.</p>';
-      return;
-    }
-    herdEl.innerHTML = herd.map((h) => `<article class="herd-item"><h3>${h.name}</h3><p><strong>Phenotype:</strong> ${h.phenotype}</p><p class="small"><strong>Genotype:</strong> ${genotypeSummary(h.genes)}</p></article>`).join("");
-  }
-
-  let currentFoal = null;
-
-  function renderFoal() {
-    if (!currentFoal) {
-      resultEl.innerHTML = '<p>Pick two horses and click <strong>Breed Horses</strong>.</p>';
-      return;
-    }
-    resultEl.innerHTML = `<h3>${currentFoal.name}</h3><p><strong>Phenotype:</strong> ${currentFoal.phenotype}</p><p class="small"><strong>Genotype:</strong> ${genotypeSummary(currentFoal.genes)}</p>`;
-  }
-
-  renderGeneFields("mare");
-  renderGeneFields("stallion");
-  renderFoal();
-  renderHerd();
-
-  byId("breed-button").addEventListener("click", () => {
-    currentFoal = breed(readHorse("mare"), readHorse("stallion"));
-    renderFoal();
-  });
-
-  byId("save-button").addEventListener("click", () => {
-    if (!currentFoal) return alert("Breed a foal first.");
-    const herd = getHerd();
-    herd.unshift(currentFoal);
-    setHerd(herd);
-    renderHerd();
-  });
-
-  byId("clear-button").addEventListener("click", () => {
-    localStorage.removeItem("genebound-herd-fixed");
-    renderHerd();
-  });
+document.addEventListener("DOMContentLoaded",()=>{const SH="genebound-herd-economy",SC="genebound-coins-economy",SS="genebound-starter-economy",COST=120;
+const G=[{id:"extension",label:"Extension",d:{mare:"Ee",stallion:"ee"},o:[["EE",["E","E"]],["Ee",["E","e"]],["ee",["e","e"]]],s:["E","e"]},{id:"agouti",label:"Agouti",d:{mare:"Aa",stallion:"Aa"},o:[["AA",["A","A"]],["Aa",["A","a"]],["aa",["a","a"]]],s:["A","a"]},{id:"cream",label:"Cream",d:{mare:"CrN",stallion:"NN"},o:[["NN",["N","N"]],["CrN",["Cr","N"]],["CrCr",["Cr","Cr"]]],s:["Cr","N"]},{id:"dun",label:"Dun",d:{mare:"dd",stallion:"Dd"},o:[["DD",["D","D"]],["Dd",["D","d"]],["dd",["d","d"]]],s:["D","d"]},{id:"gray",label:"Gray",d:{mare:"gg",stallion:"gg"},o:[["GG",["G","G"]],["Gg",["G","g"]],["gg",["g","g"]]],s:["G","g"]},{id:"roan",label:"Roan",d:{mare:"nn",stallion:"nn"},o:[["RR",["R","R"]],["Rn",["R","n"]],["nn",["n","n"]]],s:["R","n"]},{id:"champagne",label:"Champagne",d:{mare:"NN",stallion:"NN"},o:[["ChCh",["Ch","Ch"]],["ChN",["Ch","N"]],["NN",["N","N"]]],s:["Ch","N"]},{id:"silver",label:"Silver",d:{mare:"NN",stallion:"NN"},o:[["ZZ",["Z","Z"]],["ZN",["Z","N"]],["NN",["N","N"]]],s:["Z","N"]},{id:"pearl",label:"Pearl",d:{mare:"NN",stallion:"NN"},o:[["PrlPrl",["Prl","Prl"]],["PrlN",["Prl","N"]],["NN",["N","N"]]],s:["Prl","N"]},{id:"flaxen",label:"Flaxen",d:{mare:"FF",stallion:"FF"},o:[["FF",["F","F"]],["Ff",["F","f"]],["ff",["f","f"]]],s:["F","f"]},{id:"mushroom",label:"Mushroom",d:{mare:"NN",stallion:"NN"},o:[["MuMu",["Mu","Mu"]],["MuN",["Mu","N"]],["NN",["N","N"]]],s:["Mu","N"]},{id:"tobiano",label:"Tobiano",d:{mare:"NN",stallion:"NN"},o:[["ToTo",["To","To"]],["ToN",["To","N"]],["NN",["N","N"]]],s:["To","N"]},{id:"frame",label:"Frame Overo",d:{mare:"NN",stallion:"NN"},o:[["OO",["O","O"]],["ON",["O","N"]],["NN",["N","N"]]],s:["O","N"]},{id:"splash",label:"Splash",d:{mare:"NN",stallion:"NN"},o:[["SWSW",["SW","SW"]],["SWN",["SW","N"]],["NN",["N","N"]]],s:["SW","N"]},{id:"sabino",label:"Sabino-1",d:{mare:"NN",stallion:"NN"},o:[["SB1SB1",["SB1","SB1"]],["SB1N",["SB1","N"]],["NN",["N","N"]]],s:["SB1","N"]},{id:"lp",label:"Leopard Complex",d:{mare:"NN",stallion:"NN"},o:[["LpLp",["Lp","Lp"]],["LpN",["Lp","N"]],["NN",["N","N"]]],s:["Lp","N"]},{id:"patn1",label:"PATN1",d:{mare:"NN",stallion:"NN"},o:[["PATN1PATN1",["PATN1","PATN1"]],["PATN1N",["PATN1","N"]],["NN",["N","N"]]],s:["PATN1","N"]},{id:"w20",label:"W20",d:{mare:"NN",stallion:"NN"},o:[["W20W20",["W20","W20"]],["W20N",["W20","N"]],["NN",["N","N"]]],s:["W20","N"]},{id:"w5",label:"W5",d:{mare:"NN",stallion:"NN"},o:[["W5W5",["W5","W5"]],["W5N",["W5","N"]],["NN",["N","N"]]],s:["W5","N"]},{id:"w10",label:"W10",d:{mare:"NN",stallion:"NN"},o:[["W10W10",["W10","W10"]],["W10N",["W10","N"]],["NN",["N","N"]]],s:["W10","N"]},{id:"w22",label:"W22",d:{mare:"NN",stallion:"NN"},o:[["W22W22",["W22","W22"]],["W22N",["W22","N"]],["NN",["N","N"]]],s:["W22","N"]}];
+const $=id=>document.getElementById(id),result=$("result"),herdEl=$("herd"),msg=$("market-message"),coinsEl=$("coins"),countEl=$("herd-count");
+const herd=()=>{try{return JSON.parse(localStorage.getItem(SH))||[]}catch{return[]}},setHerd=v=>{localStorage.setItem(SH,JSON.stringify(v));stats()},coins=()=>{let n=parseInt(localStorage.getItem(SC)||"300",10);return Number.isFinite(n)?n:300},setCoins=v=>{localStorage.setItem(SC,String(v));stats()};
+const addCoins=n=>setCoins(coins()+n),spend=n=>coins()>=n?(setCoins(coins()-n),true):false;
+const gdef=id=>G.find(g=>g.id===id), canon=(id,a)=>a.slice().sort((x,y)=>gdef(id).s.indexOf(x)-gdef(id).s.indexOf(y)), gstr=(id,a)=>{let c=canon(id,a),m=gdef(id).o.find(([,v])=>JSON.stringify(v)===JSON.stringify(c));return m?m[0]:c.join("")};
+function renderFields(prefix){let c=$(`${prefix}-genes`);c.innerHTML="";G.forEach(g=>{let l=document.createElement("label");l.textContent=g.label;let s=document.createElement("select");s.id=`${prefix}-${g.id}`;g.o.forEach(([v])=>{let o=document.createElement("option");o.value=v;o.textContent=v;if(v===g.d[prefix])o.selected=true;s.appendChild(o)});l.appendChild(s);c.appendChild(l)})}
+const alleles=(id,v)=>gdef(id).o.find(([x])=>x===v)[1].slice(), has=(a,x)=>a.includes(x), ct=(a,x)=>a.filter(v=>v===x).length;
+function readHorse(prefix){let h={id:`${Date.now()}-${Math.floor(Math.random()*1e5)}`,name:$(`${prefix}-name`).value.trim()||(prefix==="mare"?"Unnamed Mare":"Unnamed Stallion")};G.forEach(g=>h[g.id]=alleles(g.id,$(`${prefix}-${g.id}`).value));return h}
+function applyHorse(prefix,h){$(`${prefix}-name`).value=h.name;G.forEach(g=>$(`${prefix}-${g.id}`).value=gstr(g.id,h[g.id]))}
+function base(h){return ct(h.extension,"e")===2?"Chestnut":has(h.agouti,"A")?"Bay":"Black"}
+function phenotype(h){let b=base(h),cr=ct(h.cream,"Cr"),pr=ct(h.pearl,"Prl"),vp=pr===2||(pr===1&&cr===1),fl=ct(h.flaxen,"f")===2,mu=has(h.mushroom,"Mu"),c=b;
+if(b==="Chestnut"&&mu)c="Mushroom"; else if(b==="Chestnut"&&fl)c="Flaxen Chestnut";
+if(has(h.champagne,"Ch")) c=cr===1?(b==="Chestnut"?"Gold Cream Champagne":b==="Bay"?"Amber Cream Champagne":"Classic Cream Champagne"):cr===2?(b==="Chestnut"?"Gold Double Cream Champagne":b==="Bay"?"Amber Double Cream Champagne":"Classic Double Cream Champagne"):(b==="Chestnut"?"Gold Champagne":b==="Bay"?"Amber Champagne":"Classic Champagne");
+else if(vp&&cr===1)c=b==="Chestnut"?"Palomino Pearl":b==="Bay"?"Buckskin Pearl":"Smoky Black Pearl";
+else if(pr===2)c=b==="Chestnut"?"Chestnut Pearl":b==="Bay"?"Bay Pearl":"Black Pearl";
+else if(cr===1)c=b==="Chestnut"?"Palomino":b==="Bay"?"Buckskin":"Smoky Black";
+else if(cr===2)c=b==="Chestnut"?"Cremello":b==="Bay"?"Perlino":"Smoky Cream";
+if(has(h.silver,"Z")&&b!=="Chestnut") c=c==="Black"?"Silver Black":c==="Bay"?"Silver Bay":c==="Buckskin"?"Silver Buckskin":c==="Smoky Black"?"Silver Smoky Black":`Silver ${c}`;
+if(has(h.dun,"D")) c=c==="Black"?"Grullo":c==="Bay"?"Bay Dun":`Red Dun ${c}`.replace("Red Dun Palomino","Dunalino");
+if(has(h.roan,"R")) c+=" Roan"; if(has(h.gray,"G")) c=`Gray (${c} base)`;
+let p=[]; if(has(h.tobiano,"To"))p.push("Tobiano"); let f=ct(h.frame,"O"); if(f===2)p.push("Frame Overo (LWO risk)"); else if(f===1)p.push("Frame Overo");
+if(has(h.splash,"SW"))p.push("Splash"); if(has(h.sabino,"SB1"))p.push("Sabino");
+let lp=ct(h.lp,"Lp"),pt=has(h.patn1,"PATN1"); if(lp===2&&pt)p.push("Fewspot Leopard Appaloosa"); else if(lp===1&&pt)p.push("Leopard Appaloosa"); else if(lp===2)p.push("Snowcap Appaloosa"); else if(lp===1)p.push("Varnish Roan Appaloosa");
+["w20","w5","w10","w22"].forEach(k=>{let tag={w20:"W20 White",w5:"W5 White",w10:"W10 White",w22:"W22 White"}[k]; let a={w20:"W20",w5:"W5",w10:"W10",w22:"W22"}[k]; if(has(h[k],a))p.push(tag)});
+return p.length?`${c} with ${p.join(", ")}`:c}
+function rarity(h){let s=0;["champagne","silver","pearl","mushroom","lp","patn1","w20","w5","w10","w22"].forEach(k=>{if(gstr(k,h[k])!=="NN")s+=2});["cream","dun","gray","roan","tobiano","frame","splash","sabino"].forEach(k=>{let v=gstr(k,h[k]); if(!["NN","dd","gg","nn"].includes(v))s+=1}); return s}
+const value=h=>80+rarity(h)*25;
+function breed(m,s){let h={id:`${Date.now()}-${Math.floor(Math.random()*1e5)}`,name:`Foal ${Math.floor(Math.random()*9000)+1000}`}; G.forEach(g=>h[g.id]=canon(g.id,[m[g.id][Math.floor(Math.random()*2)],s[g.id][Math.floor(Math.random()*2)]])); h.phenotype=phenotype(h); h.value=value(h); return h}
+function randomHorse(label){let h={id:`${Date.now()}-${Math.floor(Math.random()*1e5)}`,name:`${label} ${Math.floor(Math.random()*9000)+1000}`}; G.forEach(g=>{let pick=g.o[Math.floor(Math.random()*g.o.length)]; h[g.id]=pick[1].slice()}); h.phenotype=phenotype(h); h.value=value(h); return h}
+const geno=h=>G.map(g=>`${g.label}: ${gstr(g.id,h[g.id])}`).join(" • ");
+function stats(){coinsEl.textContent=String(coins()); countEl.textContent=String(herd().length)}
+function saveHorse(h){let x=herd(); x.unshift(h); setHerd(x); renderHerd()}
+function removeHorse(id){setHerd(herd().filter(h=>h.id!==id)); renderHerd()}
+function renderHerd(){let x=herd(); if(!x.length){herdEl.innerHTML='<p class="muted">No saved horses yet.</p>'; stats(); return}
+herdEl.innerHTML=x.map(h=>`<article class="herd-item"><h3>${h.name}</h3><p><strong>Phenotype:</strong> ${h.phenotype}</p><p class="small"><strong>Value:</strong> ${h.value||value(h)} coins</p><p class="small"><strong>Genotype:</strong> ${geno(h)}</p><div class="herd-actions"><button class="action-btn secondary load-mare" data-id="${h.id}" type="button">Load as Mare</button><button class="action-btn secondary load-stallion" data-id="${h.id}" type="button">Load as Stallion</button><button class="action-btn sell-btn" data-id="${h.id}" type="button">Sell for ${h.value||value(h)}</button></div></article>`).join("");
+herdEl.querySelectorAll(".sell-btn").forEach(b=>b.onclick=()=>{let h=herd().find(x=>x.id===b.dataset.id); if(!h)return; addCoins(h.value||value(h)); removeHorse(h.id); msg.textContent=`Sold ${h.name} for ${h.value||value(h)} coins.`});
+herdEl.querySelectorAll(".load-mare").forEach(b=>b.onclick=()=>{let h=herd().find(x=>x.id===b.dataset.id); if(h){applyHorse("mare",h); msg.textContent=`Loaded ${h.name} into the mare form.`}});
+herdEl.querySelectorAll(".load-stallion").forEach(b=>b.onclick=()=>{let h=herd().find(x=>x.id===b.dataset.id); if(h){applyHorse("stallion",h); msg.textContent=`Loaded ${h.name} into the stallion form.`}});
+stats()}
+let current=null; function renderFoal(){result.innerHTML=current?`<h3>${current.name}</h3><p><strong>Phenotype:</strong> ${current.phenotype}</p><p><strong>Estimated Value:</strong> ${current.value} coins</p><p class="small"><strong>Genotype:</strong> ${geno(current)}</p>`:'<p>Pick two horses and click <strong>Breed Horses</strong>.</p>'}
+renderFields("mare"); renderFields("stallion"); renderFoal(); renderHerd(); stats();
+$("breed-button").onclick=()=>{current=breed(readHorse("mare"),readHorse("stallion")); renderFoal()};
+$("save-button").onclick=()=>{if(!current)return alert("Breed a foal first."); saveHorse(current); msg.textContent=`${current.name} was added to your herd.`};
+$("clear-button").onclick=()=>{localStorage.removeItem(SH); renderHerd(); msg.textContent="Your herd was cleared."};
+$("starter-button").onclick=()=>{if(localStorage.getItem(SS)==="yes"){msg.textContent="Starter coins were already claimed."; return} addCoins(500); localStorage.setItem(SS,"yes"); msg.textContent="You claimed 500 starter coins."};
+$("buy-mare-button").onclick=()=>{if(!spend(COST)){msg.textContent="Not enough coins to buy a mare."; return} let h=randomHorse("Mare"); saveHorse(h); applyHorse("mare",h); msg.textContent=`Bought ${h.name}, a ${h.phenotype}.`};
+$("buy-stallion-button").onclick=()=>{if(!spend(COST)){msg.textContent="Not enough coins to buy a stallion."; return} let h=randomHorse("Stallion"); saveHorse(h); applyHorse("stallion",h); msg.textContent=`Bought ${h.name}, a ${h.phenotype}.`};
 });
