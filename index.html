@@ -3,18 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Genebound Fixed</title>
+  <title>Genebound Economy</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="site-header">
     <div class="container">
       <h1>Genebound</h1>
-      <p class="subtitle">Fixed expanded horse genetics browser game starter</p>
+      <p class="subtitle">Horse genetics game starter with economy</p>
+      <div class="topbar">
+        <div class="stat-box"><span class="stat-label">Coins</span><span id="coins" class="stat-value">0</span></div>
+        <div class="stat-box"><span class="stat-label">Herd Size</span><span id="herd-count" class="stat-value">0</span></div>
+      </div>
     </div>
   </header>
 
   <main class="container layout">
+    <section class="panel">
+      <h2>Market</h2>
+      <div class="button-row">
+        <button id="buy-mare-button" type="button">Buy Random Mare (120)</button>
+        <button id="buy-stallion-button" type="button">Buy Random Stallion (120)</button>
+        <button id="starter-button" class="secondary" type="button">Claim Starter Coins</button>
+      </div>
+      <div id="market-message" class="result-card small">Welcome to the market.</div>
+    </section>
+
     <section class="panel">
       <h2>Breeding Barn</h2>
       <div class="horse-grid">
@@ -29,11 +43,26 @@
           <div id="stallion-genes" class="gene-fields"></div>
         </div>
       </div>
-
       <div class="button-row">
         <button id="breed-button" type="button">Breed Horses</button>
         <button id="save-button" class="secondary" type="button">Save Foal To Herd</button>
         <button id="clear-button" class="secondary" type="button">Clear Herd</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Foal Result</h2>
+      <div id="result" class="result-card"><p>Pick two horses and click <strong>Breed Horses</strong>.</p></div>
+    </section>
+
+    <section class="panel">
+      <h2>Your Herd</h2>
+      <div id="herd" class="herd-list"><p class="muted">No saved horses yet.</p></div>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
       </div>
     </section>
 
